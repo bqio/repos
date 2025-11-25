@@ -15,6 +15,16 @@ import { LanguageToggle } from "@/components/language-toggle"
 import { translations, getItemsLabel, type Language } from "@/lib/i18n"
 import { clearImageCache } from "@/components/service-worker-register"
 
+function makeid(length: number) {
+  var result = '';
+  var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var charactersLength = characters.length;
+  for (var i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+
 export default function ManagerPage() {
   const [repositories, setRepositories] = useState<Repository[]>([])
   const [activeRepoId, setActiveRepoId] = useState<string | null>(null)
@@ -60,7 +70,7 @@ export default function ManagerPage() {
       const data = await response.json()
 
       const newRepo: Repository = {
-        id: crypto.randomUUID(),
+        id: makeid(10),
         name: data.name || translations[language].repositories,
         author: data.author,
         description: data.description,
@@ -114,7 +124,7 @@ export default function ManagerPage() {
         const data = JSON.parse(e.target?.result as string)
 
         const newRepo: Repository = {
-          id: crypto.randomUUID(),
+          id: makeid(10),
           name: data.name || file.name.replace(".json", ""),
           author: data.author,
           description: data.description,
