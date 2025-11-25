@@ -89,7 +89,7 @@ export function PosterGrid({ items, showFavoriteButton = true }: PosterGridProps
 
   const handlePosterClick = (item: RepositoryItem) => {
     const magnetLink = `magnet:?xt=urn:btih:${item.hash}&tr=${encodeURIComponent(item.tracker)}`
-    window.open(magnetLink, "_blank")
+    window.open(magnetLink, "_self")
   }
 
   const handleImageLoad = (url: string) => {

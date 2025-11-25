@@ -10,8 +10,8 @@ const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Менеджер репозиториев",
-  description: "Управление репозиториями с постерами и магнет-ссылками",
+  title: "Repos",
+  description: "Управление репозиториями",
   generator: "v0.app",
   icons: {
     icon: [
