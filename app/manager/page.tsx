@@ -93,6 +93,7 @@ export default function ManagerPage() {
         description: `${newRepo.name} ${translations[language].repoAddedDesc}`,
       })
     } catch (error) {
+      console.error(error)
       toast({
         title: translations[language].error,
         description: translations[language].errorLoadRepo,
@@ -143,6 +144,7 @@ export default function ManagerPage() {
           description: `${newRepo.name} ${translations[language].repoAddedDesc}`,
         })
       } catch (error) {
+        console.error(error)
         toast({
           title: translations[language].error,
           description: translations[language].errorLoadRepo,
