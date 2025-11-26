@@ -107,7 +107,7 @@ export default function InstructionsPage() {
                       </li>
                       <li>
                         <code className="bg-muted px-1 rounded">poster</code> - URL изображения постера (обязательное).{" "}
-                        <strong>Рекомендуемый размер: 400x640 пикселей</strong>
+                        <strong>Рекомендуемые параметры: Размер 400x640 пикселей, формат webp, качество 50</strong>
                       </li>
                       <li>
                         <code className="bg-muted px-1 rounded">size</code> - размер в байтах (обязательное)
@@ -210,7 +210,7 @@ export default function InstructionsPage() {
                       </li>
                       <li>
                         <code className="bg-muted px-1 rounded">poster</code> - poster image URL (required).{" "}
-                        <strong>Recommended size: 400x640 pixels</strong>
+                        <strong>Recommended params: Size 400x640 pixels, format webp, quality 50</strong>
                       </li>
                       <li>
                         <code className="bg-muted px-1 rounded">size</code> - size in bytes (required)
