@@ -13,7 +13,6 @@ import type { Repository } from "@/types/repository"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { LanguageToggle } from "@/components/language-toggle"
 import { translations, getItemsLabel, type Language } from "@/lib/i18n"
-import { clearImageCache } from "@/components/service-worker-register"
 
 function makeid(length: number) {
   var result = '';
@@ -31,8 +30,7 @@ export default function ManagerPage() {
   const [newRepoUrl, setNewRepoUrl] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
-  const [language, setLanguage] = useState<Language>("ru")
-  const [isClearingCache, setIsClearingCache] = useState(false)
+  const [language, setLanguage] = useState<Language>("en")
 
   useEffect(() => {
     const repos = JSON.parse(localStorage.getItem("repositories") || "[]")
@@ -189,25 +187,6 @@ export default function ManagerPage() {
       title: translations[language].repoActivated,
       description: translations[language].repoActivatedDesc,
     })
-  }
-
-  const handleClearCache = async () => {
-    setIsClearingCache(true)
-    try {
-      await clearImageCache()
-      toast({
-        title: language === "ru" ? "Кэш очищен" : "Cache cleared",
-        description: language === "ru" ? "Кэш изображений успешно очищен" : "Image cache successfully cleared",
-      })
-    } catch (error) {
-      toast({
-        title: translations[language].error,
-        description: language === "ru" ? "Не удалось очистить кэш" : "Failed to clear cache",
-        variant: "destructive",
-      })
-    } finally {
-      setIsClearingCache(false)
-    }
   }
 
   const t = translations[language]
@@ -368,19 +347,6 @@ export default function ManagerPage() {
             ))
           )}
         </div>
-
-        <Card className="p-6">
-          <h2 className="text-lg font-semibold mb-4">{language === "ru" ? "Управление кэшем" : "Cache Management"}</h2>
-          <p className="text-sm text-muted-foreground mb-4">
-            {language === "ru"
-              ? "Изображения сохраняются на вашем устройстве для быстрой загрузки. Вы можете очистить кэш, если хотите освободить место."
-              : "Images are saved on your device for faster loading. You can clear the cache if you want to free up space."}
-          </p>
-          <Button onClick={handleClearCache} disabled={isClearingCache} variant="outline">
-            <HardDriveDownload className="h-4 w-4 mr-2" />
-            {language === "ru" ? "Очистить кэш изображений" : "Clear Image Cache"}
-          </Button>
-        </Card>
       </main>
     </div>
   )

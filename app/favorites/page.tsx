@@ -19,7 +19,7 @@ export default function FavoritesPage() {
   const [sortBy, setSortBy] = useState<"date" | "title" | "size">("date")
   const [reverseSort, setReverseSort] = useState(false)
   const [showScrollTop, setShowScrollTop] = useState(false)
-  const [language, setLanguage] = useState<Language>("ru")
+  const [language, setLanguage] = useState<Language>("en")
 
   useEffect(() => {
     const loadFavorites = () => {

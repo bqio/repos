@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Settings, Search, ArrowUp, Star, ArrowUpDown } from "lucide-react"
@@ -20,8 +20,9 @@ export default function HomePage() {
   const [sortBy, setSortBy] = useState<"date" | "title" | "size">("date")
   const [reverseSort, setReverseSort] = useState(false)
   const [showScrollTop, setShowScrollTop] = useState(false)
-  const [language, setLanguage] = useState<Language>("ru")
+  const [language, setLanguage] = useState<Language>("en")
   const { toast } = useToast()
+  const boxRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const checkForUpdates = async () => {
@@ -36,17 +37,17 @@ export default function HomePage() {
             const response = await fetch(repo.sourceUrl)
             const data = await response.json()
 
-            if (data.version && data.version !== repo.version) {
-              updatedRepos[i] = {
-                ...repo,
-                name: data.name || repo.name,
-                author: data.author,
-                description: data.description,
-                version: data.version,
-                items: data.items || [],
-              }
-              hasUpdates = true
+            updatedRepos[i] = {
+              ...repo,
+              name: data.name || repo.name,
+              author: data.author,
+              description: data.description,
+              version: data.version,
+              items: data.items || [],
+            }
 
+            if (data.version && data.version !== repo.version) {
+              hasUpdates = true
               const t = translations[language]
               toast({
                 title: t.repoUpdated,
@@ -105,13 +106,16 @@ export default function HomePage() {
   }, [])
 
   useEffect(() => {
+    const el = boxRef.current
+    if (!el) return;
+
     const handleScroll = () => {
-      setShowScrollTop(window.scrollY > 500)
+      setShowScrollTop(el.scrollTop > 500)
     }
 
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+    el.addEventListener("scroll", handleScroll)
+    return () => el.removeEventListener("scroll", handleScroll)
+  }, [items])
 
   const filteredAndSortedItems = useMemo(() => {
     let result = [...items]
@@ -143,7 +147,7 @@ export default function HomePage() {
   }, [items, searchQuery, sortBy, reverseSort])
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" })
+    boxRef.current!.scrollTo({ top: 0, behavior: "smooth" })
   }
 
   const t = translations[language]
@@ -211,11 +215,11 @@ export default function HomePage() {
                 <Input
                   placeholder={t.searchPlaceholder}
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => { setSearchQuery(e.target.value); scrollToTop() }}
                   className="pl-9"
                 />
               </div>
-              <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
+              <Select value={sortBy} onValueChange={(value: any) => { setSortBy(value); scrollToTop() }}>
                 <SelectTrigger className="w-full sm:w-[200px]">
                   <SelectValue placeholder={t.sorting} />
                 </SelectTrigger>
@@ -228,7 +232,7 @@ export default function HomePage() {
               <Button
                 variant="outline"
                 size="icon"
-                onClick={() => setReverseSort(!reverseSort)}
+                onClick={() => { setReverseSort(!reverseSort); scrollToTop() }}
                 title={t.reverseSortOrder}
               >
                 <ArrowUpDown className="h-4 w-4" />
@@ -242,7 +246,7 @@ export default function HomePage() {
               </p>
             )}
 
-            <PosterGrid items={filteredAndSortedItems} />
+            <PosterGrid items={filteredAndSortedItems} boxRef={boxRef} />
           </>
         ) : (
           <div className="flex flex-col items-center justify-center py-20 text-center">

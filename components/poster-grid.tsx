@@ -1,7 +1,6 @@
 "use client"
 import { useState, useEffect, useRef } from "react"
 import type React from "react"
-
 import Image from "next/image"
 import { Star } from "lucide-react"
 import type { RepositoryItem } from "@/types/repository"
@@ -11,14 +10,14 @@ import { translations, type Language } from "@/lib/i18n"
 interface PosterGridProps {
   items: RepositoryItem[]
   showFavoriteButton?: boolean
+  boxRef: React.RefObject<HTMLDivElement | null>
 }
 
-const ITEMS_PER_PAGE = 100
+const ITEMS_PER_PAGE = 36
 
-export function PosterGrid({ items, showFavoriteButton = true }: PosterGridProps) {
+export function PosterGrid({ items, showFavoriteButton = true, boxRef }: PosterGridProps) {
   const [displayedItems, setDisplayedItems] = useState<RepositoryItem[]>([])
   const [page, setPage] = useState(1)
-  const [imageCache, setImageCache] = useState<Set<string>>(new Set())
   const [favorites, setFavorites] = useState<Set<string>>(new Set())
   const [language, setLanguage] = useState<Language>("ru")
   const loaderRef = useRef<HTMLDivElement>(null)
@@ -28,19 +27,6 @@ export function PosterGrid({ items, showFavoriteButton = true }: PosterGridProps
     setDisplayedItems(items.slice(0, ITEMS_PER_PAGE))
     setPage(1)
   }, [items])
-
-  useEffect(() => {
-    const cached = localStorage.getItem("imageCache")
-    if (cached) {
-      setImageCache(new Set(JSON.parse(cached)))
-    }
-  }, [])
-
-  useEffect(() => {
-    if (imageCache.size > 0) {
-      localStorage.setItem("imageCache", JSON.stringify(Array.from(imageCache)))
-    }
-  }, [imageCache])
 
   // Intersection Observer for infinite scroll
   useEffect(() => {
@@ -92,12 +78,6 @@ export function PosterGrid({ items, showFavoriteButton = true }: PosterGridProps
     window.open(magnetLink, "_self")
   }
 
-  const handleImageLoad = (url: string) => {
-    if (url && !imageCache.has(url)) {
-      setImageCache((prev) => new Set(prev).add(url))
-    }
-  }
-
   const handleFavoriteClick = (e: React.MouseEvent, hash: string) => {
     e.stopPropagation()
     if (isFavorite(hash)) {
@@ -122,8 +102,8 @@ export function PosterGrid({ items, showFavoriteButton = true }: PosterGridProps
   const t = translations[language]
 
   return (
-    <div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+    <div className="h-150 overflow-y-scroll" ref={boxRef}>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-8">
         {displayedItems.map((item, index) => (
           <div key={item.hash || index} className="group cursor-pointer" onClick={() => handlePosterClick(item)}>
             <div className="aspect-[2/3] relative mb-2">
@@ -134,7 +114,6 @@ export function PosterGrid({ items, showFavoriteButton = true }: PosterGridProps
                 className="object-contain opacity-95 group-hover:opacity-100 transition-opacity"
                 sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, (max-width: 1280px) 20vw, 16vw"
                 loading={index < 20 ? "eager" : "lazy"}
-                onLoad={() => handleImageLoad(item.poster)}
               />
 
               {item.size && (

@@ -6,7 +6,7 @@ import { useEffect, useState } from "react"
 import type { Language } from "@/lib/i18n"
 
 export function LanguageToggle() {
-  const [language, setLanguage] = useState<Language>("ru")
+  const [language, setLanguage] = useState<Language>("en")
 
   useEffect(() => {
     const savedLanguage = localStorage.getItem("language") as Language

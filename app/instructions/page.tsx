@@ -6,9 +6,11 @@ import { Card } from "@/components/ui/card"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { translations, type Language } from "@/lib/i18n"
+import { ThemeToggle } from "@/components/theme-toggle"
+import { LanguageToggle } from "@/components/language-toggle"
 
 export default function InstructionsPage() {
-  const [language, setLanguage] = useState<Language>("ru")
+  const [language, setLanguage] = useState<Language>("en")
 
   useEffect(() => {
     const savedLanguage = localStorage.getItem("language") as Language
@@ -35,7 +37,11 @@ export default function InstructionsPage() {
               <span className="sr-only">{t.back}</span>
             </Button>
           </Link>
-          <h1 className="text-2xl font-bold">{t.createRepository}</h1>
+          <h1 className="text-2xl font-bold">{t.instructions}</h1>
+          <div className="ml-auto flex items-center gap-2">
+            <LanguageToggle />
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 
@@ -51,12 +57,12 @@ export default function InstructionsPage() {
                 <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-sm">
                   {`{
   "name": "Название репозитория",
-  "author": "Имя автора",
-  "description": "Описание репозитория",
   "version": "1.0.0",
+  "description": "Описание репозитория",
+  "author": "Имя автора",
   "items": [
     {
-      "title": "Название игры",
+      "title": "Название",
       "hash": "TORRENT_HASH",
       "tracker": "http://tracker.url/announce",
       "poster": "http://example.com/poster.jpg",
@@ -78,13 +84,13 @@ export default function InstructionsPage() {
                         <code className="bg-muted px-1 rounded">name</code> - название репозитория (обязательное)
                       </li>
                       <li>
-                        <code className="bg-muted px-1 rounded">author</code> - имя автора репозитория (опциональное)
+                        <code className="bg-muted px-1 rounded">version</code> - версия репозитория (обязательное)
                       </li>
                       <li>
                         <code className="bg-muted px-1 rounded">description</code> - описание репозитория (опциональное)
                       </li>
                       <li>
-                        <code className="bg-muted px-1 rounded">version</code> - версия репозитория (опциональное)
+                        <code className="bg-muted px-1 rounded">author</code> - имя автора репозитория (опциональное)
                       </li>
                       <li>
                         <code className="bg-muted px-1 rounded">items</code> - массив элементов (обязательное)
@@ -93,10 +99,10 @@ export default function InstructionsPage() {
                   </div>
 
                   <div>
-                    <h3 className="font-semibold mt-4">Поля элемента (игры):</h3>
+                    <h3 className="font-semibold mt-4">Поля элемента:</h3>
                     <ul className="list-disc list-inside text-muted-foreground space-y-1 mt-2 ml-2">
                       <li>
-                        <code className="bg-muted px-1 rounded">title</code> - название игры (обязательное)
+                        <code className="bg-muted px-1 rounded">title</code> - название (обязательное)
                       </li>
                       <li>
                         <code className="bg-muted px-1 rounded">hash</code> - INFO HASH торрента (обязательное)
@@ -106,7 +112,7 @@ export default function InstructionsPage() {
                         (обязательное)
                       </li>
                       <li>
-                        <code className="bg-muted px-1 rounded">poster</code> - URL изображения постера (обязательное).{" "}
+                        <code className="bg-muted px-1 rounded">poster</code> - URL изображения постера (обязательное)<br />
                         <strong>Рекомендуемые параметры: Размер 400x640 пикселей, формат webp, качество 50</strong>
                       </li>
                       <li>
@@ -140,7 +146,6 @@ export default function InstructionsPage() {
               <section>
                 <h2 className="text-xl font-semibold mb-3">Примечания</h2>
                 <ul className="list-disc list-inside text-muted-foreground space-y-1 ml-2">
-                  <li>Изображения постеров кэшируются локально для быстрой загрузки</li>
                   <li>При клике на постер автоматически генерируется magnet-ссылка</li>
                   <li>Размер файла отображается в MB или GB</li>
                   <li>Дата публикации используется для сортировки</li>
@@ -154,13 +159,13 @@ export default function InstructionsPage() {
                 <p className="text-muted-foreground mb-4">A repository is a JSON file with the following structure:</p>
                 <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-sm">
                   {`{
-  "name": "Repository Name",
-  "author": "Author Name",
-  "description": "Repository description",
+  "name": "Repository name",
   "version": "1.0.0",
+  "description": "Repository description",
+  "author": "Author name"
   "items": [
     {
-      "title": "Game Title",
+      "title": "Item title",
       "hash": "TORRENT_HASH",
       "tracker": "http://tracker.url/announce",
       "poster": "http://example.com/poster.jpg",
@@ -182,13 +187,13 @@ export default function InstructionsPage() {
                         <code className="bg-muted px-1 rounded">name</code> - repository name (required)
                       </li>
                       <li>
-                        <code className="bg-muted px-1 rounded">author</code> - repository author name (optional)
+                        <code className="bg-muted px-1 rounded">version</code> - repository version (required)
                       </li>
                       <li>
                         <code className="bg-muted px-1 rounded">description</code> - repository description (optional)
                       </li>
                       <li>
-                        <code className="bg-muted px-1 rounded">version</code> - repository version (optional)
+                        <code className="bg-muted px-1 rounded">author</code> - repository author name (optional)
                       </li>
                       <li>
                         <code className="bg-muted px-1 rounded">items</code> - array of items (required)
@@ -197,10 +202,10 @@ export default function InstructionsPage() {
                   </div>
 
                   <div>
-                    <h3 className="font-semibold mt-4">Item (game) fields:</h3>
+                    <h3 className="font-semibold mt-4">Item fields:</h3>
                     <ul className="list-disc list-inside text-muted-foreground space-y-1 mt-2 ml-2">
                       <li>
-                        <code className="bg-muted px-1 rounded">title</code> - game title (required)
+                        <code className="bg-muted px-1 rounded">title</code> - item title (required)
                       </li>
                       <li>
                         <code className="bg-muted px-1 rounded">hash</code> - torrent INFO HASH (required)
@@ -209,7 +214,7 @@ export default function InstructionsPage() {
                         <code className="bg-muted px-1 rounded">tracker</code> - tracker URL for magnet link (required)
                       </li>
                       <li>
-                        <code className="bg-muted px-1 rounded">poster</code> - poster image URL (required).{" "}
+                        <code className="bg-muted px-1 rounded">poster</code> - poster image URL (required)<br />
                         <strong>Recommended params: Size 400x640 pixels, format webp, quality 50</strong>
                       </li>
                       <li>
@@ -243,7 +248,6 @@ export default function InstructionsPage() {
               <section>
                 <h2 className="text-xl font-semibold mb-3">Notes</h2>
                 <ul className="list-disc list-inside text-muted-foreground space-y-1 ml-2">
-                  <li>Poster images are cached locally for fast loading</li>
                   <li>Clicking on a poster automatically generates a magnet link</li>
                   <li>File size is displayed in MB or GB</li>
                   <li>Publication date is used for sorting</li>
