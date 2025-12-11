@@ -1,41 +1,48 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useMemo, useRef } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Settings, Search, ArrowUp, Star, ArrowUpDown } from "lucide-react"
-import Link from "next/link"
-import { PosterGrid } from "@/components/poster-grid"
-import type { Repository, RepositoryItem } from "@/types/repository"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ThemeToggle } from "@/components/theme-toggle"
-import { LanguageToggle } from "@/components/language-toggle"
-import { translations, getItemsLabel, type Language } from "@/lib/i18n"
-import { useToast } from "@/hooks/use-toast"
+import { useState, useEffect, useMemo, useRef } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Settings, Search, ArrowUp, Star, ArrowUpDown } from "lucide-react";
+import Link from "next/link";
+import { PosterGrid } from "@/components/poster-grid";
+import type { Repository, RepositoryItem } from "@/types/repository";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { LanguageToggle } from "@/components/language-toggle";
+import { translations, getItemsLabel, type Language } from "@/lib/i18n";
+import { useToast } from "@/hooks/use-toast";
 
 export default function HomePage() {
-  const [activeRepo, setActiveRepo] = useState<Repository | null>(null)
-  const [items, setItems] = useState<RepositoryItem[]>([])
-  const [searchQuery, setSearchQuery] = useState("")
-  const [sortBy, setSortBy] = useState<"date" | "title" | "size">("date")
-  const [reverseSort, setReverseSort] = useState(false)
-  const [showScrollTop, setShowScrollTop] = useState(false)
-  const [language, setLanguage] = useState<Language>("en")
-  const { toast } = useToast()
-  const boxRef = useRef<HTMLDivElement>(null)
+  const [activeRepo, setActiveRepo] = useState<Repository | null>(null);
+  const [items, setItems] = useState<RepositoryItem[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState<"date" | "title" | "size">("date");
+  const [reverseSort, setReverseSort] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const [language, setLanguage] = useState<Language>("en");
+  const { toast } = useToast();
 
   useEffect(() => {
     const checkForUpdates = async () => {
-      const repos = JSON.parse(localStorage.getItem("repositories") || "[]") as Repository[]
-      let hasUpdates = false
-      const updatedRepos = [...repos]
+      const repos = JSON.parse(
+        localStorage.getItem("repositories") || "[]"
+      ) as Repository[];
+      let hasUpdates = false;
+      const updatedRepos = [...repos];
 
       for (let i = 0; i < updatedRepos.length; i++) {
-        const repo = updatedRepos[i]
+        const repo = updatedRepos[i];
         if (repo.sourceUrl) {
           try {
-            const response = await fetch(repo.sourceUrl)
-            const data = await response.json()
+            const response = await fetch(repo.sourceUrl);
+            const data = await response.json();
 
             updatedRepos[i] = {
               ...repo,
@@ -44,124 +51,136 @@ export default function HomePage() {
               description: data.description,
               version: data.version,
               items: data.items || [],
-            }
+            };
 
             if (data.version && data.version !== repo.version) {
-              hasUpdates = true
-              const t = translations[language]
+              hasUpdates = true;
+              const t = translations[language];
               toast({
                 title: t.repoUpdated,
                 description: `${repo.name} ${t.repoUpdatedTo} ${data.version}`,
-              })
+              });
             }
           } catch (error) {
-            console.error(`Failed to check updates for ${repo.name}`, error)
+            console.error(`Failed to check updates for ${repo.name}`, error);
           }
         }
       }
 
       if (hasUpdates) {
-        localStorage.setItem("repositories", JSON.stringify(updatedRepos))
+        localStorage.setItem("repositories", JSON.stringify(updatedRepos));
 
-        const activeRepoId = localStorage.getItem("activeRepositoryId")
+        const activeRepoId = localStorage.getItem("activeRepositoryId");
         if (activeRepoId) {
-          const active = updatedRepos.find((r: Repository) => r.id === activeRepoId)
+          const active = updatedRepos.find(
+            (r: Repository) => r.id === activeRepoId
+          );
           if (active) {
-            setActiveRepo(active)
-            setItems(active.items || [])
+            setActiveRepo(active);
+            setItems(active.items || []);
           }
         }
       }
-    }
+    };
 
-    checkForUpdates()
-  }, [language, toast])
+    checkForUpdates();
+  }, [language, toast]);
 
   useEffect(() => {
-    const repos = JSON.parse(localStorage.getItem("repositories") || "[]")
-    const activeRepoId = localStorage.getItem("activeRepositoryId")
+    const repos = JSON.parse(localStorage.getItem("repositories") || "[]");
+    const activeRepoId = localStorage.getItem("activeRepositoryId");
 
     if (activeRepoId && repos.length > 0) {
-      const active = repos.find((r: Repository) => r.id === activeRepoId)
+      const active = repos.find((r: Repository) => r.id === activeRepoId);
       if (active) {
-        setActiveRepo(active)
-        setItems(active.items || [])
+        setActiveRepo(active);
+        setItems(active.items || []);
       }
     } else if (repos.length > 0) {
-      setActiveRepo(repos[0])
-      setItems(repos[0].items || [])
-      localStorage.setItem("activeRepositoryId", repos[0].id)
+      setActiveRepo(repos[0]);
+      setItems(repos[0].items || []);
+      localStorage.setItem("activeRepositoryId", repos[0].id);
     }
 
-    const savedLanguage = localStorage.getItem("language") as Language
+    const savedLanguage = localStorage.getItem("language") as Language;
     if (savedLanguage) {
-      setLanguage(savedLanguage)
+      setLanguage(savedLanguage);
     }
 
     const handleLanguageChange = (e: CustomEvent<Language>) => {
-      setLanguage(e.detail)
-    }
-    window.addEventListener("languageChange", handleLanguageChange as EventListener)
-    return () => window.removeEventListener("languageChange", handleLanguageChange as EventListener)
-  }, [])
+      setLanguage(e.detail);
+    };
+    window.addEventListener(
+      "languageChange",
+      handleLanguageChange as EventListener
+    );
+    return () =>
+      window.removeEventListener(
+        "languageChange",
+        handleLanguageChange as EventListener
+      );
+  }, []);
 
   useEffect(() => {
-    const el = boxRef.current
-    if (!el) return;
-
     const handleScroll = () => {
-      setShowScrollTop(el.scrollTop > 500)
-    }
+      setShowScrollTop(window.scrollY > 500);
+    };
 
-    el.addEventListener("scroll", handleScroll)
-    return () => el.removeEventListener("scroll", handleScroll)
-  }, [items])
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const filteredAndSortedItems = useMemo(() => {
-    let result = [...items]
+    let result = [...items];
 
     if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase()
-      result = result.filter((item) => item.title.toLowerCase().includes(query))
+      const query = searchQuery.toLowerCase();
+      result = result.filter((item) =>
+        item.title.toLowerCase().includes(query)
+      );
     }
 
     result.sort((a, b) => {
-      let comparison = 0
+      let comparison = 0;
       switch (sortBy) {
         case "date":
-          comparison = (b.published_date || 0) - (a.published_date || 0)
-          break
+          comparison = (b.published_date || 0) - (a.published_date || 0);
+          break;
         case "title":
-          comparison = a.title.localeCompare(b.title)
-          break
+          comparison = a.title.localeCompare(b.title);
+          break;
         case "size":
-          comparison = (b.size || 0) - (a.size || 0)
-          break
+          comparison = (b.size || 0) - (a.size || 0);
+          break;
         default:
-          comparison = 0
+          comparison = 0;
       }
-      return reverseSort ? -comparison : comparison
-    })
+      return reverseSort ? -comparison : comparison;
+    });
 
-    return result
-  }, [items, searchQuery, sortBy, reverseSort])
+    return result;
+  }, [items, searchQuery, sortBy, reverseSort]);
 
   const scrollToTop = () => {
-    boxRef.current!.scrollTo({ top: 0, behavior: "smooth" })
-  }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
-  const t = translations[language]
+  const t = translations[language];
 
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex-1 min-w-0">
-            <h1 className="text-2xl font-bold text-foreground">{activeRepo ? activeRepo.name : t.repositories}</h1>
+            <h1 className="text-2xl font-bold text-foreground">
+              {activeRepo ? activeRepo.name : t.repositories}
+            </h1>
             {activeRepo && (
               <>
                 {activeRepo.description && (
-                  <p className="text-sm text-muted-foreground mt-1 truncate">{activeRepo.description}</p>
+                  <p className="text-sm text-muted-foreground mt-1 truncate">
+                    {activeRepo.description}
+                  </p>
                 )}
                 <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
                   {activeRepo.author && (
@@ -175,7 +194,8 @@ export default function HomePage() {
                   {activeRepo.version && (
                     <>
                       <span>
-                        {language === "ru" ? "Версия" : "Version"}: {activeRepo.version}
+                        {language === "ru" ? "Версия" : "Version"}:{" "}
+                        {activeRepo.version}
                       </span>
                       <span>•</span>
                     </>
@@ -215,11 +235,20 @@ export default function HomePage() {
                 <Input
                   placeholder={t.searchPlaceholder}
                   value={searchQuery}
-                  onChange={(e) => { setSearchQuery(e.target.value); scrollToTop() }}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    scrollToTop();
+                  }}
                   className="pl-9"
                 />
               </div>
-              <Select value={sortBy} onValueChange={(value: any) => { setSortBy(value); scrollToTop() }}>
+              <Select
+                value={sortBy}
+                onValueChange={(value: any) => {
+                  setSortBy(value);
+                  scrollToTop();
+                }}
+              >
                 <SelectTrigger className="w-full sm:w-[200px]">
                   <SelectValue placeholder={t.sorting} />
                 </SelectTrigger>
@@ -232,7 +261,10 @@ export default function HomePage() {
               <Button
                 variant="outline"
                 size="icon"
-                onClick={() => { setReverseSort(!reverseSort); scrollToTop() }}
+                onClick={() => {
+                  setReverseSort(!reverseSort);
+                  scrollToTop();
+                }}
                 title={t.reverseSortOrder}
               >
                 <ArrowUpDown className="h-4 w-4" />
@@ -246,7 +278,7 @@ export default function HomePage() {
               </p>
             )}
 
-            <PosterGrid items={filteredAndSortedItems} boxRef={boxRef} />
+            <PosterGrid items={filteredAndSortedItems} />
           </>
         ) : (
           <div className="flex flex-col items-center justify-center py-20 text-center">
@@ -254,7 +286,9 @@ export default function HomePage() {
               <Settings className="h-10 w-10 text-muted-foreground" />
             </div>
             <h2 className="text-2xl font-semibold mb-2">{t.noActiveRepo}</h2>
-            <p className="text-muted-foreground mb-6 max-w-md">{t.addRepoDesc}</p>
+            <p className="text-muted-foreground mb-6 max-w-md">
+              {t.addRepoDesc}
+            </p>
             <Link href="/manager">
               <Button>{t.openManager}</Button>
             </Link>
@@ -263,11 +297,15 @@ export default function HomePage() {
       </main>
 
       {showScrollTop && (
-        <Button onClick={scrollToTop} size="icon" className="fixed bottom-8 left-10 rounded-full shadow-lg z-50">
+        <Button
+          onClick={scrollToTop}
+          size="icon"
+          className="fixed bottom-8 left-10 rounded-full shadow-lg z-50"
+        >
           <ArrowUp className="h-5 w-5" />
           <span className="sr-only">{t.scrollToTop}</span>
         </Button>
       )}
     </div>
-  )
+  );
 }

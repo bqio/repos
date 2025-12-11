@@ -125,10 +125,6 @@
   }
 }
 
-body::-webkit-scrollbar {
-  display: none;
-}
-
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -143,7 +139,6 @@ body::-webkit-scrollbar {
   background: #ccc;
   border: 0px none #ffffff;
   border-radius: 50px;
-  cursor: n-resize;
 }
 
 ::-webkit-scrollbar-thumb:hover {

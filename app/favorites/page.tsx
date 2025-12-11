@@ -1,119 +1,142 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useMemo } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Settings, Search, ArrowUp, Star, ArrowUpDown } from "lucide-react"
-import Link from "next/link"
-import { PosterGrid } from "@/components/poster-grid"
-import type { Repository, RepositoryItem } from "@/types/repository"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ThemeToggle } from "@/components/theme-toggle"
-import { LanguageToggle } from "@/components/language-toggle"
-import { translations, getItemsLabel, type Language } from "@/lib/i18n"
-import { getFavorites } from "@/lib/favorites"
+import { useState, useEffect, useMemo } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Settings, Search, ArrowUp, Star, ArrowUpDown } from "lucide-react";
+import Link from "next/link";
+import { PosterGrid } from "@/components/poster-grid";
+import type { Repository, RepositoryItem } from "@/types/repository";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { LanguageToggle } from "@/components/language-toggle";
+import { translations, getItemsLabel, type Language } from "@/lib/i18n";
+import { getFavorites } from "@/lib/favorites";
 
 export default function FavoritesPage() {
-  const [favoriteItems, setFavoriteItems] = useState<RepositoryItem[]>([])
-  const [searchQuery, setSearchQuery] = useState("")
-  const [sortBy, setSortBy] = useState<"date" | "title" | "size">("date")
-  const [reverseSort, setReverseSort] = useState(false)
-  const [showScrollTop, setShowScrollTop] = useState(false)
-  const [language, setLanguage] = useState<Language>("en")
+  const [favoriteItems, setFavoriteItems] = useState<RepositoryItem[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState<"date" | "title" | "size">("date");
+  const [reverseSort, setReverseSort] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const [language, setLanguage] = useState<Language>("en");
 
   useEffect(() => {
     const loadFavorites = () => {
-      const repos = JSON.parse(localStorage.getItem("repositories") || "[]")
-      const favoriteHashes = getFavorites()
+      const repos = JSON.parse(localStorage.getItem("repositories") || "[]");
+      const favoriteHashes = getFavorites();
 
-      const allItems: RepositoryItem[] = []
+      const allItems: RepositoryItem[] = [];
       repos.forEach((repo: Repository) => {
         if (repo.items) {
-          allItems.push(...repo.items)
+          allItems.push(...repo.items);
         }
-      })
+      });
 
-      const favItems = allItems.filter((item) => favoriteHashes.includes(item.hash))
-      setFavoriteItems(favItems)
-    }
+      const favItems = Array.from(
+        new Map(
+          allItems
+            .filter((item) => favoriteHashes.includes(item.hash))
+            .map((item) => [item.hash, item])
+        ).values()
+      );
+      setFavoriteItems(favItems);
+    };
 
-    loadFavorites()
+    loadFavorites();
 
-    const savedLanguage = localStorage.getItem("language") as Language
+    const savedLanguage = localStorage.getItem("language") as Language;
     if (savedLanguage) {
-      setLanguage(savedLanguage)
+      setLanguage(savedLanguage);
     }
 
     const handleLanguageChange = (e: CustomEvent<Language>) => {
-      setLanguage(e.detail)
-    }
+      setLanguage(e.detail);
+    };
 
     const handleFavoritesChange = () => {
-      loadFavorites()
-    }
+      loadFavorites();
+    };
 
-    window.addEventListener("languageChange", handleLanguageChange as EventListener)
-    window.addEventListener("favoritesChange", handleFavoritesChange)
+    window.addEventListener(
+      "languageChange",
+      handleLanguageChange as EventListener
+    );
+    window.addEventListener("favoritesChange", handleFavoritesChange);
 
     return () => {
-      window.removeEventListener("languageChange", handleLanguageChange as EventListener)
-      window.removeEventListener("favoritesChange", handleFavoritesChange)
-    }
-  }, [])
+      window.removeEventListener(
+        "languageChange",
+        handleLanguageChange as EventListener
+      );
+      window.removeEventListener("favoritesChange", handleFavoritesChange);
+    };
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
-      setShowScrollTop(window.scrollY > 500)
-    }
+      setShowScrollTop(window.scrollY > 500);
+    };
 
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const filteredAndSortedItems = useMemo(() => {
-    let result = [...favoriteItems]
+    let result = [...favoriteItems];
 
     if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase()
-      result = result.filter((item) => item.title.toLowerCase().includes(query))
+      const query = searchQuery.toLowerCase();
+      result = result.filter((item) =>
+        item.title.toLowerCase().includes(query)
+      );
     }
 
     result.sort((a, b) => {
-      let comparison = 0
+      let comparison = 0;
       switch (sortBy) {
         case "date":
-          comparison = (b.published_date || 0) - (a.published_date || 0)
-          break
+          comparison = (b.published_date || 0) - (a.published_date || 0);
+          break;
         case "title":
-          comparison = a.title.localeCompare(b.title)
-          break
+          comparison = a.title.localeCompare(b.title);
+          break;
         case "size":
-          comparison = (b.size || 0) - (a.size || 0)
-          break
+          comparison = (b.size || 0) - (a.size || 0);
+          break;
         default:
-          comparison = 0
+          comparison = 0;
       }
-      return reverseSort ? -comparison : comparison
-    })
+      return reverseSort ? -comparison : comparison;
+    });
 
-    return result
-  }, [favoriteItems, searchQuery, sortBy, reverseSort])
+    return result;
+  }, [favoriteItems, searchQuery, sortBy, reverseSort]);
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" })
-  }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
-  const t = translations[language]
+  const t = translations[language];
 
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex-1 min-w-0">
-            <h1 className="text-2xl font-bold text-foreground">{t.favorites}</h1>
+            <h1 className="text-2xl font-bold text-foreground">
+              {t.favorites}
+            </h1>
             <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
               <span>
-                {favoriteItems.length} {getItemsLabel(favoriteItems.length, language)}
+                {favoriteItems.length}{" "}
+                {getItemsLabel(favoriteItems.length, language)}
               </span>
             </div>
           </div>
@@ -149,7 +172,10 @@ export default function FavoritesPage() {
                   className="pl-9"
                 />
               </div>
-              <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
+              <Select
+                value={sortBy}
+                onValueChange={(value: any) => setSortBy(value)}
+              >
                 <SelectTrigger className="w-full sm:w-[200px]">
                   <SelectValue placeholder={t.sorting} />
                 </SelectTrigger>
@@ -197,11 +223,15 @@ export default function FavoritesPage() {
       </main>
 
       {showScrollTop && (
-        <Button onClick={scrollToTop} size="icon" className="fixed bottom-8 right-8 rounded-full shadow-lg z-50">
+        <Button
+          onClick={scrollToTop}
+          size="icon"
+          className="fixed bottom-8 right-8 rounded-full shadow-lg z-50"
+        >
           <ArrowUp className="h-5 w-5" />
           <span className="sr-only">{t.scrollToTop}</span>
         </Button>
       )}
     </div>
-  )
+  );
 }

@@ -1,6 +1,9 @@
 export const translations = {
   ru: {
+    gb: "Гб",
+    mb: "Мб",
     repositories: "Репозитории",
+    repoNotValid: "Невалидная структура репозитория",
     items: "элементов",
     item: "элемент",
     items2: "элемента",
@@ -31,7 +34,7 @@ export const translations = {
     repoAdded: "Репозиторий добавлен",
     repoAddedDesc: "успешно добавлен",
     error: "Ошибка",
-    errorLoadRepo: "Не удалось загрузить репозиторий по ссылке",
+    errorLoadRepo: "Не удалось загрузить репозиторий по ссылке. Возможно проблема с CORS или сетью",
     errorDuplicateRepo: "Репозиторий с таким именем и версией уже существует",
     repoDeleted: "Репозиторий удален",
     repoDeletedDesc: "Репозиторий успешно удален",
@@ -52,7 +55,10 @@ export const translations = {
     source: "Источник",
   },
   en: {
+    gb: "Gb",
+    mb: "Mb",
     repositories: "Repositories",
+    repoNotValid: "Invalid repository structure",
     items: "items",
     item: "item",
     items2: "items",
@@ -83,7 +89,7 @@ export const translations = {
     repoAdded: "Repository added",
     repoAddedDesc: "successfully added",
     error: "Error",
-    errorLoadRepo: "Failed to load repository from URL",
+    errorLoadRepo: "Failed to load repository from URL. Possible CORS or network issue",
     errorDuplicateRepo: "Repository with this name and version already exists",
     repoDeleted: "Repository deleted",
     repoDeletedDesc: "Repository successfully deleted",
