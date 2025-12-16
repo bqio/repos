@@ -1,5 +1,8 @@
 export const translations = {
   ru: {
+    otherTitle: "Прочее",
+    clearButtonText: "Сбросить настройки приложения",
+    clearWarning: "Внимание! Будут сброшены настройки языка, темы, а также удалены репозитории.",
     gb: "Гб",
     mb: "Мб",
     repositories: "Репозитории",
@@ -55,6 +58,9 @@ export const translations = {
     source: "Источник",
   },
   en: {
+    otherTitle: "More",
+    clearButtonText: "Clear application settings",
+    clearWarning: "Warning! This will reset your language and theme settings, and delete all repositories.",
     gb: "Gb",
     mb: "Mb",
     repositories: "Repositories",

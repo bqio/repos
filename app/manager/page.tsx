@@ -12,10 +12,10 @@ import {
   Upload,
   ExternalLink,
   Check,
-  HardDriveDownload,
   BookOpen,
   Cloud,
   FileX,
+  OctagonX,
 } from "lucide-react";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
@@ -67,6 +67,11 @@ export default function ManagerPage() {
         handleLanguageChange as EventListener
       );
   }, []);
+
+  const clearSettings = async () => {
+    localStorage.clear();
+    location.href = "/";
+  };
 
   const saveRepositories = (repos: Repository[]) => {
     localStorage.setItem("repositories", JSON.stringify(repos));
@@ -418,6 +423,20 @@ export default function ManagerPage() {
               </Card>
             ))
           )}
+        </div>
+        <div className="space-y-4 mb-8">
+          <h2 className="text-lg font-semibold">{t.otherTitle}</h2>
+          <Card className="p-8 text-center">
+            <label htmlFor="">
+              <Button className="w-full" asChild onClick={clearSettings}>
+                <span>
+                  <OctagonX className="h-4 w-4 mr-2" />
+                  {t.clearButtonText}
+                </span>
+              </Button>
+            </label>
+            <p className="text-muted-foreground">{t.clearWarning}</p>
+          </Card>
         </div>
       </main>
     </div>
