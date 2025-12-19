@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -37,6 +37,8 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  --scrollbar-border: #ddd;
+  --scrollbar-thumb: #ddd;
 }
 
 .dark {
@@ -72,11 +74,13 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(0.269 0 0);
   --sidebar-ring: oklch(0.439 0 0);
+  --scrollbar-border: oklch(0.269 0 0);
+  --scrollbar-thumb: oklch(39.042% 0.00004 271.152);
 }
 
 @theme inline {
-  --font-sans: "Geist", "Geist Fallback";
-  --font-mono: "Geist Mono", "Geist Mono Fallback";
+  --font-sans: 'Geist', 'Geist Fallback';
+  --font-mono: 'Geist Mono', 'Geist Mono Fallback';
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -136,23 +140,21 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border: 0px none #ffffff;
-  border-radius: 50px;
+  background: var(--scrollbar-thumb);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #ddd;
+  background: var(--scrollbar-thumb);
 }
 
 ::-webkit-scrollbar-thumb:active {
-  background: #ddd;
+  background: var(--scrollbar-thumb);
 }
 
 ::-webkit-scrollbar-track {
   background: transparent;
-  border: 0px none #ffffff;
-  border-radius: 50px;
+  border-left: 1px solid var(--scrollbar-border);
+  border-right: 1px solid var(--scrollbar-border);
 }
 
 ::-webkit-scrollbar-track:active {

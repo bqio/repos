@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
-import { translations, type Language } from "@/lib/i18n";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { LanguageToggle } from "@/components/language-toggle";
+import { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
+import { translations, type Language } from '@/lib/i18n';
+import { ThemeToggle } from '@/components/theme-toggle';
+import { LanguageToggle } from '@/components/language-toggle';
 
 export default function InstructionsPage() {
-  const [language, setLanguage] = useState<Language>("en");
+  const [language, setLanguage] = useState<Language>('en');
 
   useEffect(() => {
-    const savedLanguage = localStorage.getItem("language") as Language;
+    const savedLanguage = localStorage.getItem('language') as Language;
     if (savedLanguage) {
       setLanguage(savedLanguage);
     }
@@ -22,12 +22,12 @@ export default function InstructionsPage() {
       setLanguage(e.detail);
     };
     window.addEventListener(
-      "languageChange",
+      'languageChange',
       handleLanguageChange as EventListener
     );
     return () =>
       window.removeEventListener(
-        "languageChange",
+        'languageChange',
         handleLanguageChange as EventListener
       );
   }, []);
@@ -54,7 +54,7 @@ export default function InstructionsPage() {
 
       <main className="container mx-auto px-4 py-8 max-w-4xl">
         <Card className="p-8">
-          {language === "ru" ? (
+          {language === 'ru' ? (
             <div className="space-y-6">
               <section>
                 <h2 className="text-xl font-semibold mb-3">
@@ -101,7 +101,7 @@ export default function InstructionsPage() {
                       <li>
                         <code className="bg-muted px-1 rounded">
                           description
-                        </code>{" "}
+                        </code>{' '}
                         - описание репозитория (опциональное)
                       </li>
                       <li>
@@ -146,7 +146,7 @@ export default function InstructionsPage() {
                       <li>
                         <code className="bg-muted px-1 rounded">
                           published_date
-                        </code>{" "}
+                        </code>{' '}
                         - дата публикации в Unix timestamp (опциональное)
                       </li>
                     </ul>
@@ -161,7 +161,7 @@ export default function InstructionsPage() {
                 <p className="text-muted-foreground">
                   INFO HASH - это уникальный идентификатор торрента (40 символов
                   в HEX формате). Его можно получить из торрент-файла или из
-                  magnet-ссылки (после{" "}
+                  magnet-ссылки (после{' '}
                   <code className="bg-muted px-1 rounded">btih:</code>).
                 </p>
               </section>
@@ -186,14 +186,14 @@ export default function InstructionsPage() {
                 <h2 className="text-xl font-semibold mb-3">CORS</h2>
                 <p className="text-muted-foreground">
                   Если репозиторий находится на удалённом сервере, то необходимо
-                  правильно настроить CORS, иначе сервис будет выдавать ошибку{" "}
+                  правильно настроить CORS, иначе сервис будет выдавать ошибку{' '}
                   <strong>
                     Не удалось загрузить репозиторий по ссылке. Возможно
                     проблема с CORS или сетью.
                   </strong>
                 </p>
                 <p className="text-muted-foreground">
-                  Сервер должен отправлять корректный заголовок{" "}
+                  Сервер должен отправлять корректный заголовок{' '}
                   <code className="bg-muted px-1 rounded">
                     Access-Control-Allow-Origin: *
                   </code>
@@ -206,7 +206,7 @@ export default function InstructionsPage() {
                   <li>
                     При клике на постер автоматически генерируется magnet-ссылка
                   </li>
-                  <li>Размер файла отображается в MB или GB</li>
+                  <li>Размер файла отображается в Мб или Гб</li>
                   <li>Дата публикации используется для сортировки</li>
                 </ul>
               </section>
@@ -259,7 +259,7 @@ export default function InstructionsPage() {
                       <li>
                         <code className="bg-muted px-1 rounded">
                           description
-                        </code>{" "}
+                        </code>{' '}
                         - repository description (optional)
                       </li>
                       <li>
@@ -304,7 +304,7 @@ export default function InstructionsPage() {
                       <li>
                         <code className="bg-muted px-1 rounded">
                           published_date
-                        </code>{" "}
+                        </code>{' '}
                         - publication date in Unix timestamp (optional)
                       </li>
                     </ul>
@@ -319,7 +319,7 @@ export default function InstructionsPage() {
                 <p className="text-muted-foreground">
                   INFO HASH is a unique torrent identifier (40 characters in HEX
                   format). You can get it from a torrent file or from a magnet
-                  link (after{" "}
+                  link (after{' '}
                   <code className="bg-muted px-1 rounded">btih:</code>).
                 </p>
               </section>
@@ -341,14 +341,14 @@ export default function InstructionsPage() {
                 <p className="text-muted-foreground">
                   If the repository is hosted on a remote server, you must
                   configure CORS correctly; otherwise, the service will show an
-                  error{" "}
+                  error{' '}
                   <strong>
                     Failed to load repository from URL. Possible CORS or network
                     issue.
                   </strong>
                 </p>
                 <p className="text-muted-foreground">
-                  The server must send a valid header{" "}
+                  The server must send a valid header{' '}
                   <code className="bg-muted px-1 rounded">
                     Access-Control-Allow-Origin: *
                   </code>

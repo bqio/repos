@@ -1,38 +1,45 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useMemo, useRef } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Settings, Search, ArrowUp, Star, ArrowUpDown } from "lucide-react";
-import Link from "next/link";
-import { PosterGrid } from "@/components/poster-grid";
-import type { Repository, RepositoryItem } from "@/types/repository";
+import { useState, useEffect, useMemo, useRef } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import {
+  Settings,
+  Search,
+  ArrowUp,
+  Star,
+  ArrowUpDown,
+  Download,
+} from 'lucide-react';
+import Link from 'next/link';
+import { PosterGrid } from '@/components/poster-grid';
+import type { Repository, RepositoryItem } from '@/types/repository';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { LanguageToggle } from "@/components/language-toggle";
-import { translations, getItemsLabel, type Language } from "@/lib/i18n";
-import { useToast } from "@/hooks/use-toast";
+} from '@/components/ui/select';
+import { ThemeToggle } from '@/components/theme-toggle';
+import { LanguageToggle } from '@/components/language-toggle';
+import { translations, getItemsLabel, type Language } from '@/lib/i18n';
+import { useToast } from '@/hooks/use-toast';
 
 export default function HomePage() {
   const [activeRepo, setActiveRepo] = useState<Repository | null>(null);
   const [items, setItems] = useState<RepositoryItem[]>([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState<"date" | "title" | "size">("date");
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortBy, setSortBy] = useState<'date' | 'title' | 'size'>('date');
   const [reverseSort, setReverseSort] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
-  const [language, setLanguage] = useState<Language>("en");
+  const [language, setLanguage] = useState<Language>('en');
   const { toast } = useToast();
 
   useEffect(() => {
     const checkForUpdates = async () => {
       const repos = JSON.parse(
-        localStorage.getItem("repositories") || "[]"
+        localStorage.getItem('repositories') || '[]'
       ) as Repository[];
       let hasUpdates = false;
       const updatedRepos = [...repos];
@@ -68,9 +75,9 @@ export default function HomePage() {
       }
 
       if (hasUpdates) {
-        localStorage.setItem("repositories", JSON.stringify(updatedRepos));
+        localStorage.setItem('repositories', JSON.stringify(updatedRepos));
 
-        const activeRepoId = localStorage.getItem("activeRepositoryId");
+        const activeRepoId = localStorage.getItem('activeRepositoryId');
         if (activeRepoId) {
           const active = updatedRepos.find(
             (r: Repository) => r.id === activeRepoId
@@ -87,8 +94,8 @@ export default function HomePage() {
   }, [language, toast]);
 
   useEffect(() => {
-    const repos = JSON.parse(localStorage.getItem("repositories") || "[]");
-    const activeRepoId = localStorage.getItem("activeRepositoryId");
+    const repos = JSON.parse(localStorage.getItem('repositories') || '[]');
+    const activeRepoId = localStorage.getItem('activeRepositoryId');
 
     if (activeRepoId && repos.length > 0) {
       const active = repos.find((r: Repository) => r.id === activeRepoId);
@@ -99,10 +106,10 @@ export default function HomePage() {
     } else if (repos.length > 0) {
       setActiveRepo(repos[0]);
       setItems(repos[0].items || []);
-      localStorage.setItem("activeRepositoryId", repos[0].id);
+      localStorage.setItem('activeRepositoryId', repos[0].id);
     }
 
-    const savedLanguage = localStorage.getItem("language") as Language;
+    const savedLanguage = localStorage.getItem('language') as Language;
     if (savedLanguage) {
       setLanguage(savedLanguage);
     }
@@ -111,12 +118,12 @@ export default function HomePage() {
       setLanguage(e.detail);
     };
     window.addEventListener(
-      "languageChange",
+      'languageChange',
       handleLanguageChange as EventListener
     );
     return () =>
       window.removeEventListener(
-        "languageChange",
+        'languageChange',
         handleLanguageChange as EventListener
       );
   }, []);
@@ -126,8 +133,8 @@ export default function HomePage() {
       setShowScrollTop(window.scrollY > 500);
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const filteredAndSortedItems = useMemo(() => {
@@ -143,13 +150,13 @@ export default function HomePage() {
     result.sort((a, b) => {
       let comparison = 0;
       switch (sortBy) {
-        case "date":
+        case 'date':
           comparison = (b.published_date || 0) - (a.published_date || 0);
           break;
-        case "title":
+        case 'title':
           comparison = a.title.localeCompare(b.title);
           break;
-        case "size":
+        case 'size':
           comparison = (b.size || 0) - (a.size || 0);
           break;
         default:
@@ -162,14 +169,14 @@ export default function HomePage() {
   }, [items, searchQuery, sortBy, reverseSort]);
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const t = translations[language];
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b border-border bg-card">
+      <header className="border-b border-border bg-card sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex-1 min-w-0">
             <h1 className="text-2xl font-bold text-foreground">
@@ -194,7 +201,7 @@ export default function HomePage() {
                   {activeRepo.version && (
                     <>
                       <span>
-                        {language === "ru" ? "Версия" : "Version"}:{" "}
+                        {language === 'ru' ? 'Версия' : 'Version'}:{' '}
                         {activeRepo.version}
                       </span>
                       <span>•</span>
@@ -224,54 +231,61 @@ export default function HomePage() {
             </Link>
           </div>
         </div>
+        {items.length > 0 ? (
+          <>
+            <div className="container mx-auto px-4 py-4">
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder={t.searchPlaceholder}
+                    value={searchQuery}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value);
+                      scrollToTop();
+                    }}
+                    className="pl-9"
+                  />
+                </div>
+                <Select
+                  value={sortBy}
+                  onValueChange={(value: any) => {
+                    setSortBy(value);
+                    scrollToTop();
+                  }}
+                >
+                  <SelectTrigger className="w-full sm:w-[200px]">
+                    <SelectValue placeholder={t.sorting} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="date">{t.sortByDate}</SelectItem>
+                    <SelectItem value="title">{t.sortByTitle}</SelectItem>
+                    <SelectItem value="size">{t.sortBySize}</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => {
+                    setReverseSort(!reverseSort);
+                    scrollToTop();
+                  }}
+                  title={t.reverseSortOrder}
+                >
+                  <ArrowUpDown className="h-4 w-4" />
+                  <span className="sr-only">{t.reverseSortOrder}</span>
+                </Button>
+              </div>
+            </div>
+          </>
+        ) : (
+          ''
+        )}
       </header>
 
       <main className="container mx-auto px-4 py-8">
         {items.length > 0 ? (
           <>
-            <div className="flex flex-col sm:flex-row gap-4 mb-6">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder={t.searchPlaceholder}
-                  value={searchQuery}
-                  onChange={(e) => {
-                    setSearchQuery(e.target.value);
-                    scrollToTop();
-                  }}
-                  className="pl-9"
-                />
-              </div>
-              <Select
-                value={sortBy}
-                onValueChange={(value: any) => {
-                  setSortBy(value);
-                  scrollToTop();
-                }}
-              >
-                <SelectTrigger className="w-full sm:w-[200px]">
-                  <SelectValue placeholder={t.sorting} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="date">{t.sortByDate}</SelectItem>
-                  <SelectItem value="title">{t.sortByTitle}</SelectItem>
-                  <SelectItem value="size">{t.sortBySize}</SelectItem>
-                </SelectContent>
-              </Select>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => {
-                  setReverseSort(!reverseSort);
-                  scrollToTop();
-                }}
-                title={t.reverseSortOrder}
-              >
-                <ArrowUpDown className="h-4 w-4" />
-                <span className="sr-only">{t.reverseSortOrder}</span>
-              </Button>
-            </div>
-
             {searchQuery && (
               <p className="text-sm text-muted-foreground mb-4">
                 {t.found}: {filteredAndSortedItems.length}
