@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import type React from "react";
+import type React from 'react';
 
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
+import { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card } from '@/components/ui/card';
 import {
   ArrowLeft,
   Trash2,
@@ -16,18 +16,18 @@ import {
   Cloud,
   FileX,
   OctagonX,
-} from "lucide-react";
-import Link from "next/link";
-import { useToast } from "@/hooks/use-toast";
-import type { Repository } from "@/types/repository";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { LanguageToggle } from "@/components/language-toggle";
-import { translations, getItemsLabel, type Language } from "@/lib/i18n";
+} from 'lucide-react';
+import Link from 'next/link';
+import { useToast } from '@/hooks/use-toast';
+import type { Repository } from '@/types/repository';
+import { ThemeToggle } from '@/components/theme-toggle';
+import { LanguageToggle } from '@/components/language-toggle';
+import { translations, getItemsLabel, type Language } from '@/lib/i18n';
 
 function makeid(length: number) {
-  var result = "";
+  var result = '';
   var characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   var charactersLength = characters.length;
   for (var i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
@@ -38,18 +38,18 @@ function makeid(length: number) {
 export default function ManagerPage() {
   const [repositories, setRepositories] = useState<Repository[]>([]);
   const [activeRepoId, setActiveRepoId] = useState<string | null>(null);
-  const [newRepoUrl, setNewRepoUrl] = useState("");
+  const [newRepoUrl, setNewRepoUrl] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const [language, setLanguage] = useState<Language>("en");
+  const [language, setLanguage] = useState<Language>('en');
 
   useEffect(() => {
-    const repos = JSON.parse(localStorage.getItem("repositories") || "[]");
-    const activeId = localStorage.getItem("activeRepositoryId");
+    const repos = JSON.parse(localStorage.getItem('repositories') || '[]');
+    const activeId = localStorage.getItem('activeRepositoryId');
     setRepositories(repos);
     setActiveRepoId(activeId);
 
-    const savedLanguage = localStorage.getItem("language") as Language;
+    const savedLanguage = localStorage.getItem('language') as Language;
     if (savedLanguage) {
       setLanguage(savedLanguage);
     }
@@ -58,23 +58,23 @@ export default function ManagerPage() {
       setLanguage(e.detail);
     };
     window.addEventListener(
-      "languageChange",
+      'languageChange',
       handleLanguageChange as EventListener
     );
     return () =>
       window.removeEventListener(
-        "languageChange",
+        'languageChange',
         handleLanguageChange as EventListener
       );
   }, []);
 
   const clearSettings = async () => {
     localStorage.clear();
-    location.href = "/";
+    location.href = '/';
   };
 
   const saveRepositories = (repos: Repository[]) => {
-    localStorage.setItem("repositories", JSON.stringify(repos));
+    localStorage.setItem('repositories', JSON.stringify(repos));
     setRepositories(repos);
   };
 
@@ -95,11 +95,11 @@ export default function ManagerPage() {
       const response = await fetch(newRepoUrl);
       const data = await response.json();
 
-      if (data.name == "" || data.version == "" || data.items.length == 0) {
+      if (data.name == '' || data.version == '' || data.items.length == 0) {
         toast({
           title: translations[language].error,
           description: translations[language].repoNotValid,
-          variant: "destructive",
+          variant: 'destructive',
         });
         setIsLoading(false);
         return;
@@ -119,7 +119,7 @@ export default function ManagerPage() {
         toast({
           title: translations[language].error,
           description: translations[language].errorDuplicateRepo,
-          variant: "destructive",
+          variant: 'destructive',
         });
         setIsLoading(false);
         return;
@@ -129,11 +129,11 @@ export default function ManagerPage() {
       saveRepositories(updatedRepos);
 
       if (!activeRepoId) {
-        localStorage.setItem("activeRepositoryId", newRepo.id);
+        localStorage.setItem('activeRepositoryId', newRepo.id);
         setActiveRepoId(newRepo.id);
       }
 
-      setNewRepoUrl("");
+      setNewRepoUrl('');
       toast({
         title: translations[language].repoAdded,
         description: `${newRepo.name} ${translations[language].repoAddedDesc}`,
@@ -143,7 +143,7 @@ export default function ManagerPage() {
       toast({
         title: translations[language].error,
         description: translations[language].errorLoadRepo,
-        variant: "destructive",
+        variant: 'destructive',
       });
     } finally {
       setIsLoading(false);
@@ -159,11 +159,11 @@ export default function ManagerPage() {
       try {
         const data = JSON.parse(e.target?.result as string);
 
-        if (data.name == "" || data.version == "" || data.items.length == 0) {
+        if (data.name == '' || data.version == '' || data.items.length == 0) {
           toast({
             title: translations[language].error,
             description: translations[language].repoNotValid,
-            variant: "destructive",
+            variant: 'destructive',
           });
           setIsLoading(false);
           return;
@@ -171,7 +171,7 @@ export default function ManagerPage() {
 
         const newRepo: Repository = {
           id: makeid(10),
-          name: data.name || file.name.replace(".json", ""),
+          name: data.name || file.name.replace('.json', ''),
           author: data.author,
           description: data.description,
           version: data.version,
@@ -182,7 +182,7 @@ export default function ManagerPage() {
           toast({
             title: translations[language].error,
             description: translations[language].errorDuplicateRepo,
-            variant: "destructive",
+            variant: 'destructive',
           });
           return;
         }
@@ -191,7 +191,7 @@ export default function ManagerPage() {
         saveRepositories(updatedRepos);
 
         if (!activeRepoId) {
-          localStorage.setItem("activeRepositoryId", newRepo.id);
+          localStorage.setItem('activeRepositoryId', newRepo.id);
           setActiveRepoId(newRepo.id);
         }
 
@@ -204,12 +204,12 @@ export default function ManagerPage() {
         toast({
           title: translations[language].error,
           description: translations[language].errorLoadRepo,
-          variant: "destructive",
+          variant: 'destructive',
         });
       }
     };
     reader.readAsText(file);
-    event.target.value = "";
+    event.target.value = '';
   };
 
   const deleteRepository = (id: string) => {
@@ -218,7 +218,7 @@ export default function ManagerPage() {
 
     if (activeRepoId === id) {
       const newActiveId = updatedRepos[0]?.id || null;
-      localStorage.setItem("activeRepositoryId", newActiveId || "");
+      localStorage.setItem('activeRepositoryId', newActiveId || '');
       setActiveRepoId(newActiveId);
     }
 
@@ -229,7 +229,7 @@ export default function ManagerPage() {
   };
 
   const setActiveRepository = (id: string) => {
-    localStorage.setItem("activeRepositoryId", id);
+    localStorage.setItem('activeRepositoryId', id);
     setActiveRepoId(id);
     toast({
       title: translations[language].repoActivated,
@@ -258,7 +258,7 @@ export default function ManagerPage() {
       </header>
 
       <main className="container mx-auto px-4 py-8 max-w-4xl">
-        <Card className="p-6 mb-8">
+        <Card className="p-6 mb-4">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold">{t.addRepository}</h2>
             <Link href="/instructions">
@@ -275,7 +275,7 @@ export default function ManagerPage() {
                 placeholder={t.repoUrl}
                 value={newRepoUrl}
                 onChange={(e) => setNewRepoUrl(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && addRepositoryByUrl()}
+                onKeyDown={(e) => e.key === 'Enter' && addRepositoryByUrl()}
               />
               <Button onClick={addRepositoryByUrl} disabled={isLoading}>
                 <ExternalLink className="h-4 w-4 mr-2" />
@@ -318,7 +318,7 @@ export default function ManagerPage() {
           </div>
         </Card>
 
-        <div className="space-y-4 mb-8">
+        <div className="space-y-4 mb-4">
           <h2 className="text-lg font-semibold">
             {t.repositories} ({repositories.length})
           </h2>
@@ -332,7 +332,7 @@ export default function ManagerPage() {
               <Card
                 key={repo.id}
                 className={`p-4 ${
-                  activeRepoId === repo.id ? "border-primary" : ""
+                  activeRepoId === repo.id ? 'border-primary' : ''
                 }`}
               >
                 <div className="flex items-center justify-between">
@@ -374,14 +374,14 @@ export default function ManagerPage() {
                       {repo.version && (
                         <>
                           <span>
-                            {language === "ru" ? "Версия" : "Version"}:{" "}
+                            {language === 'ru' ? 'Версия' : 'Version'}:{' '}
                             {repo.version}
                           </span>
                           <span>•</span>
                         </>
                       )}
                       <span>
-                        {repo.items?.length || 0}{" "}
+                        {repo.items?.length || 0}{' '}
                         {getItemsLabel(repo.items?.length || 0, language)}
                       </span>
                     </div>
@@ -424,7 +424,7 @@ export default function ManagerPage() {
             ))
           )}
         </div>
-        <div className="space-y-4 mb-8">
+        <div className="space-y-4 mb-4">
           <h2 className="text-lg font-semibold">{t.otherTitle}</h2>
           <Card className="p-8 text-center">
             <label htmlFor="">

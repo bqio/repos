@@ -1,15 +1,15 @@
-"use client";
-import { useState, useEffect, useRef } from "react";
-import type React from "react";
-import Image from "next/image";
-import { Star } from "lucide-react";
-import type { RepositoryItem } from "@/types/repository";
+'use client';
+import { useState, useEffect, useRef } from 'react';
+import type React from 'react';
+import Image from 'next/image';
+import { Star } from 'lucide-react';
+import type { RepositoryItem } from '@/types/repository';
 import {
   addToFavorites,
   removeFromFavorites,
   isFavorite,
-} from "@/lib/favorites";
-import { translations, type Language } from "@/lib/i18n";
+} from '@/lib/favorites';
+import { translations, type Language } from '@/lib/i18n';
 
 interface PosterGridProps {
   items: RepositoryItem[];
@@ -25,7 +25,7 @@ export function PosterGrid({
   const [displayedItems, setDisplayedItems] = useState<RepositoryItem[]>([]);
   const [page, setPage] = useState(1);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
-  const [language, setLanguage] = useState<Language>("ru");
+  const [language, setLanguage] = useState<Language>('ru');
   const loaderRef = useRef<HTMLDivElement>(null);
 
   const t = translations[language];
@@ -59,33 +59,33 @@ export function PosterGrid({
 
   useEffect(() => {
     const syncFavorites = () => {
-      const favs = localStorage.getItem("favorites");
+      const favs = localStorage.getItem('favorites');
       if (favs) {
         setFavorites(new Set(JSON.parse(favs)));
       }
     };
 
     syncFavorites();
-    window.addEventListener("favoritesChange", syncFavorites);
-    return () => window.removeEventListener("favoritesChange", syncFavorites);
+    window.addEventListener('favoritesChange', syncFavorites);
+    return () => window.removeEventListener('favoritesChange', syncFavorites);
   }, []);
 
   useEffect(() => {
     const syncLanguage = () => {
-      const lang = (localStorage.getItem("language") || "ru") as Language;
+      const lang = (localStorage.getItem('language') || 'ru') as Language;
       setLanguage(lang);
     };
 
     syncLanguage();
-    window.addEventListener("languageChange", syncLanguage);
-    return () => window.removeEventListener("languageChange", syncLanguage);
+    window.addEventListener('languageChange', syncLanguage);
+    return () => window.removeEventListener('languageChange', syncLanguage);
   }, []);
 
   const handlePosterClick = (item: RepositoryItem) => {
     const magnetLink = `magnet:?xt=urn:btih:${
       item.hash
     }&tr=${encodeURIComponent(item.tracker)}`;
-    window.open(magnetLink, "_self");
+    window.open(magnetLink, '_self');
   };
 
   const handleFavoriteClick = (e: React.MouseEvent, hash: string) => {
@@ -98,7 +98,7 @@ export function PosterGrid({
   };
 
   const formatFileSize = (bytes: number): string => {
-    if (!bytes || bytes === 0) return "";
+    if (!bytes || bytes === 0) return '';
 
     const gb = bytes / (1024 * 1024 * 1024);
     if (gb >= 1) {
@@ -118,18 +118,18 @@ export function PosterGrid({
             className="group cursor-pointer"
             onClick={() => handlePosterClick(item)}
           >
-            <div className="aspect-[2/3] relative mb-2">
+            <div className="aspect-2/3 relative mb-2">
               <Image
-                src={item.poster || "/placeholder.svg?height=600&width=400"}
-                alt={item.title || "Постер"}
+                src={item.poster || '/placeholder.png'}
+                alt={item.title}
                 fill
-                className="object-contain opacity-95 group-hover:opacity-100 transition-opacity"
+                className="object-contain opacity-95 group-hover:opacity-100 scale-98 hover:scale-100 transition-all"
                 sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, (max-width: 1280px) 20vw, 16vw"
-                loading={index < 20 ? "eager" : "lazy"}
+                loading={index < 20 ? 'eager' : 'lazy'}
               />
 
               {item.size && (
-                <div className="absolute top-2 right-4 bg-green-700 text-white text-xs px-2 py-1 rounded font-bold">
+                <div className="absolute top-3 right-5 bg-green-700 text-white text-xs px-2 py-1 rounded font-bold">
                   {formatFileSize(item.size)}
                 </div>
               )}
@@ -137,26 +137,29 @@ export function PosterGrid({
               {showFavoriteButton && (
                 <button
                   onClick={(e) => handleFavoriteClick(e, item.hash)}
-                  className="absolute top-2 left-2 bg-black/70 text-white p-1.5 rounded hover:bg-black/90 transition-colors"
+                  className="absolute top-3 left-3 bg-black/70 text-white p-1.5 rounded hover:bg-black/90 transition-colors"
                   aria-label={
                     favorites.has(item.hash)
-                      ? "Убрать из избранного"
-                      : "Добавить в избранное"
+                      ? 'Убрать из избранного'
+                      : 'Добавить в избранное'
                   }
                 >
                   <Star
                     className={`h-4 w-4 ${
                       favorites.has(item.hash)
-                        ? "fill-yellow-400 text-yellow-400"
-                        : "text-white"
+                        ? 'fill-yellow-400 text-yellow-400'
+                        : 'text-white'
                     }`}
                   />
                 </button>
               )}
             </div>
 
-            <h3 className="text-sm font-medium truncate text-foreground px-1">
-              {item.title || "Без названия"}
+            <h3
+              className="text-sm font-medium truncate text-foreground px-1"
+              title={item.title}
+            >
+              {item.title}
             </h3>
           </div>
         ))}
