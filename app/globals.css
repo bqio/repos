@@ -75,7 +75,7 @@
   --sidebar-border: oklch(0.269 0 0);
   --sidebar-ring: oklch(0.439 0 0);
   --scrollbar-bg: #0a0a0a;
-  --scrollbar-thumb: #e97815;
+  --scrollbar-thumb: oklch(1 0 0);
 }
 
 @theme inline {

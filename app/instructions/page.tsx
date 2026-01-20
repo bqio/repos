@@ -23,12 +23,12 @@ export default function InstructionsPage() {
     };
     window.addEventListener(
       'languageChange',
-      handleLanguageChange as EventListener
+      handleLanguageChange as EventListener,
     );
     return () =>
       window.removeEventListener(
         'languageChange',
-        handleLanguageChange as EventListener
+        handleLanguageChange as EventListener,
       );
   }, []);
 
@@ -36,7 +36,7 @@ export default function InstructionsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b border-border bg-card">
+      <header className="border-b border-border bg-card sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center gap-4">
           <Link href="/manager">
             <Button variant="ghost" size="icon">
@@ -183,31 +183,35 @@ export default function InstructionsPage() {
               </section>
 
               <section>
-                <h2 className="text-xl font-semibold mb-3">CORS</h2>
-                <p className="text-muted-foreground">
-                  Если репозиторий находится на удалённом сервере, то необходимо
-                  правильно настроить CORS, иначе сервис будет выдавать ошибку{' '}
-                  <strong>
-                    Не удалось загрузить репозиторий по ссылке. Возможно
-                    проблема с CORS или сетью.
-                  </strong>
-                </p>
-                <p className="text-muted-foreground">
-                  Сервер должен отправлять корректный заголовок{' '}
-                  <code className="bg-muted px-1 rounded">
-                    Access-Control-Allow-Origin: *
-                  </code>
-                </p>
-              </section>
-
-              <section>
-                <h2 className="text-xl font-semibold mb-3">Примечания</h2>
+                <h2 className="text-xl font-semibold mb-3">
+                  CORS и кэширование
+                </h2>
                 <ul className="list-disc list-inside text-muted-foreground space-y-1 ml-2">
                   <li>
-                    При клике на постер автоматически генерируется magnet-ссылка
+                    Если репозиторий находится на удалённом сервере, то
+                    необходимо правильно настроить CORS и кэширование.
                   </li>
-                  <li>Размер файла отображается в Мб или Гб</li>
-                  <li>Дата публикации используется для сортировки</li>
+                  <li>
+                    При неправильной настройке CORS приложение будет выдавать
+                    ошибку{' '}
+                    <strong>
+                      Не удалось загрузить репозиторий по ссылке. Возможно
+                      проблема с CORS или сетью.
+                    </strong>
+                  </li>
+                  <li>
+                    При неправильной настройке кэширования автообновление
+                    репозитория может работать со сбоями.
+                  </li>
+                  <li>
+                    Сервер должен отправлять корректные заголовки{' '}
+                    <code className="bg-muted px-1 rounded">
+                      Access-Control-Allow-Origin
+                    </code>{' '}
+                    и{' '}
+                    <code className="bg-muted px-1 rounded">Cache-Control</code>
+                    .
+                  </li>
                 </ul>
               </section>
             </div>
@@ -337,32 +341,33 @@ export default function InstructionsPage() {
               </section>
 
               <section>
-                <h2 className="text-xl font-semibold mb-3">CORS</h2>
-                <p className="text-muted-foreground">
-                  If the repository is hosted on a remote server, you must
-                  configure CORS correctly; otherwise, the service will show an
-                  error{' '}
-                  <strong>
-                    Failed to load repository from URL. Possible CORS or network
-                    issue.
-                  </strong>
-                </p>
-                <p className="text-muted-foreground">
-                  The server must send a valid header{' '}
-                  <code className="bg-muted px-1 rounded">
-                    Access-Control-Allow-Origin: *
-                  </code>
-                </p>
-              </section>
-
-              <section>
-                <h2 className="text-xl font-semibold mb-3">Notes</h2>
+                <h2 className="text-xl font-semibold mb-3">CORS and Caching</h2>
                 <ul className="list-disc list-inside text-muted-foreground space-y-1 ml-2">
                   <li>
-                    Clicking on a poster automatically generates a magnet link
+                    If the repository is located on a remote server, CORS and
+                    caching must be configured correctly.
                   </li>
-                  <li>File size is displayed in MB or GB</li>
-                  <li>Publication date is used for sorting</li>
+                  <li>
+                    If CORS is misconfigured, the application will display the
+                    error:{' '}
+                    <strong>
+                      Failed to load repository from URL. Possible CORS or
+                      network issue.
+                    </strong>
+                  </li>
+                  <li>
+                    If caching is misconfigured, automatic repository updates
+                    may not work correctly.
+                  </li>
+                  <li>
+                    The server must send the correct{' '}
+                    <code className="bg-muted px-1 rounded">
+                      Access-Control-Allow-Origin
+                    </code>{' '}
+                    and{' '}
+                    <code className="bg-muted px-1 rounded">Cache-Control</code>
+                    headers.
+                  </li>
                 </ul>
               </section>
             </div>
