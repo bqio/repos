@@ -10,6 +10,7 @@ import {
   isFavorite,
 } from '@/lib/favorites';
 import { translations, type Language } from '@/lib/i18n';
+import { PosterImage } from './poster-image';
 
 interface PosterGridProps {
   items: RepositoryItem[];
@@ -47,7 +48,7 @@ export function PosterGrid({
           setPage(nextPage);
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     if (loaderRef.current) {
@@ -119,15 +120,7 @@ export function PosterGrid({
             onClick={() => handlePosterClick(item)}
           >
             <div className="aspect-2/3 relative mb-2">
-              <Image
-                src={item.poster || '/placeholder.png'}
-                alt={item.title}
-                fill
-                className="object-contain opacity-95 group-hover:opacity-100 scale-98 hover:scale-100 transition-all"
-                sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, (max-width: 1280px) 20vw, 16vw"
-                loading={index < 20 ? 'eager' : 'lazy'}
-              />
-
+              <PosterImage src={item.poster} alt={item.title} index={index} />
               {item.size && (
                 <div className="absolute top-3 right-5 bg-green-700 text-white text-xs px-2 py-1 rounded font-bold">
                   {formatFileSize(item.size)}

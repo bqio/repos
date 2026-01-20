@@ -25,6 +25,7 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import { LanguageToggle } from '@/components/language-toggle';
 import { translations, getItemsLabel, type Language } from '@/lib/i18n';
 import { useToast } from '@/hooks/use-toast';
+import { SearchInput } from '@/components/search-input';
 
 export default function HomePage() {
   const [activeRepo, setActiveRepo] = useState<Repository | null>(null);
@@ -39,7 +40,7 @@ export default function HomePage() {
   useEffect(() => {
     const checkForUpdates = async () => {
       const repos = JSON.parse(
-        localStorage.getItem('repositories') || '[]'
+        localStorage.getItem('repositories') || '[]',
       ) as Repository[];
       let hasUpdates = false;
       const updatedRepos = [...repos];
@@ -48,6 +49,7 @@ export default function HomePage() {
         const repo = updatedRepos[i];
         if (repo.sourceUrl) {
           try {
+            console.log(`Sync repo: ${repo.sourceUrl}`);
             const response = await fetch(repo.sourceUrl);
             const data = await response.json();
 
@@ -80,7 +82,7 @@ export default function HomePage() {
         const activeRepoId = localStorage.getItem('activeRepositoryId');
         if (activeRepoId) {
           const active = updatedRepos.find(
-            (r: Repository) => r.id === activeRepoId
+            (r: Repository) => r.id === activeRepoId,
           );
           if (active) {
             setActiveRepo(active);
@@ -119,12 +121,12 @@ export default function HomePage() {
     };
     window.addEventListener(
       'languageChange',
-      handleLanguageChange as EventListener
+      handleLanguageChange as EventListener,
     );
     return () =>
       window.removeEventListener(
         'languageChange',
-        handleLanguageChange as EventListener
+        handleLanguageChange as EventListener,
       );
   }, []);
 
@@ -143,7 +145,7 @@ export default function HomePage() {
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       result = result.filter((item) =>
-        item.title.toLowerCase().includes(query)
+        item.title.toLowerCase().includes(query),
       );
     }
 
@@ -235,18 +237,15 @@ export default function HomePage() {
           <>
             <div className="container mx-auto px-4 py-4">
               <div className="flex flex-col sm:flex-row gap-4">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder={t.searchPlaceholder}
-                    value={searchQuery}
-                    onChange={(e) => {
-                      setSearchQuery(e.target.value);
-                      scrollToTop();
-                    }}
-                    className="pl-9"
-                  />
-                </div>
+                <SearchInput
+                  placeholder={t.searchPlaceholder}
+                  value={searchQuery}
+                  onChange={(value) => {
+                    setSearchQuery(value);
+                    scrollToTop();
+                  }}
+                  onClear={() => scrollToTop()}
+                />
                 <Select
                   value={sortBy}
                   onValueChange={(value: any) => {
