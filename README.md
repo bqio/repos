@@ -6,9 +6,11 @@
 
 **Repository manager for your purpose.**
 
+<a href="https://github.com/bqio/repos/releases">![Github All Releases](https://img.shields.io/github/downloads/bqio/repos/total.svg)</a>
+
 </div>
 
-## Dev
+## Development
 
 ```bash
 cargo tauri dev
