@@ -1,6 +1,6 @@
 <div align="center">
 
-<a href="https://repos-app.ru"><img src="https://repos-app.ru/favicon.ico" height="100" alt="logo"/></a>
+<a href="https://repos-app.ru"><img src="public/icon.png" height="100" alt="logo"/></a>
 
 ## Repos
 
