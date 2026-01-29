@@ -1,6 +1,12 @@
-# Repos
+<div align="center">
 
-Repository manager for your purpose.
+<a href="https://repos-app.ru"><img src="public/icon.png" height="100" alt="logo"/></a>
+
+## Repos
+
+**Repository manager for your purpose.**
+
+</div>
 
 ## Dev
 
