@@ -2,7 +2,10 @@
 
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { check, Update } from '@tauri-apps/plugin-updater';
+import { getVersion } from '@tauri-apps/api/app';
+import { getCurrentWindow } from '@tauri-apps/api/window';
+import { relaunch } from '@tauri-apps/plugin-process';
 import {
   Settings,
   Search,
@@ -26,6 +29,7 @@ import { LanguageToggle } from '@/components/language-toggle';
 import { translations, getItemsLabel, type Language } from '@/lib/i18n';
 import { useToast } from '@/hooks/use-toast';
 import { SearchInput } from '@/components/search-input';
+import { UpdateDialog } from '@/components/update-dialog';
 
 export default function HomePage() {
   const [activeRepo, setActiveRepo] = useState<Repository | null>(null);
@@ -35,6 +39,9 @@ export default function HomePage() {
   const [reverseSort, setReverseSort] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [language, setLanguage] = useState<Language>('en');
+  const [openUpdateDialog, setOpenUpdateDialog] = useState(false);
+  const [updateVersion, setUpdateVersion] = useState<string | null>(null);
+  const [updateState, setUpdateState] = useState<Update | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -139,6 +146,55 @@ export default function HomePage() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    setApplicationVersion();
+    checkReposUpdates();
+  }, []);
+
+  const handleUpdate = async () => {
+    setOpenUpdateDialog(false);
+
+    let downloaded = 0;
+    let contentLength = 0;
+
+    await updateState!.downloadAndInstall((event) => {
+      switch (event.event) {
+        case 'Started':
+          contentLength = event.data.contentLength!;
+          console.log(`started downloading ${event.data.contentLength} bytes`);
+          break;
+        case 'Progress':
+          downloaded += event.data.chunkLength;
+          console.log(`downloaded ${downloaded} from ${contentLength}`);
+          break;
+        case 'Finished':
+          console.log('download finished');
+          break;
+      }
+    });
+
+    console.log('update installed2');
+    await relaunch();
+  };
+
+  const setApplicationVersion = async () => {
+    const window = getCurrentWindow();
+    const appVersion = await getVersion();
+
+    await window.setTitle(`Repos ${appVersion}`);
+  };
+
+  const checkReposUpdates = async () => {
+    const update = await check();
+    if (update) {
+      setUpdateVersion(update.version);
+      setOpenUpdateDialog(true);
+      setUpdateState(update);
+    } else {
+      console.log('not found update');
+    }
+  };
+
   const filteredAndSortedItems = useMemo(() => {
     let result = [...items];
 
@@ -178,6 +234,12 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <UpdateDialog
+        open={openUpdateDialog}
+        onClickUpdate={handleUpdate}
+        version={updateVersion}
+        setOpen={setOpenUpdateDialog}
+      />
       <header className="border-b border-border bg-card sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex-1 min-w-0">
@@ -253,7 +315,7 @@ export default function HomePage() {
                     scrollToTop();
                   }}
                 >
-                  <SelectTrigger className="w-full sm:w-[200px]">
+                  <SelectTrigger className="w-full sm:w-50">
                     <SelectValue placeholder={t.sorting} />
                   </SelectTrigger>
                   <SelectContent>
