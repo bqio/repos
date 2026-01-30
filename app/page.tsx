@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { check } from '@tauri-apps/plugin-updater';
 import {
   Settings,
   Search,
@@ -138,6 +138,19 @@ export default function HomePage() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    checkReposUpdates();
+  }, []);
+
+  const checkReposUpdates = async () => {
+    const update = await check();
+    if (update) {
+      console.log('found update');
+    } else {
+      console.log('not found update');
+    }
+  };
 
   const filteredAndSortedItems = useMemo(() => {
     let result = [...items];
