@@ -23,3 +23,15 @@ cargo tauri dev
 ```bash
 cargo tauri build
 ```
+
+## TODO
+
+- Download torrent inside app
+
+## FAQ
+
+- [How to create a repository?](faq/REPO.md)
+
+## License
+
+MIT
