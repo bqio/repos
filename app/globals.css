@@ -129,29 +129,29 @@
   }
 }
 
-body {
+main {
   --sb-track-color: var(--scrollbar-bg);
   --sb-thumb-color: var(--scrollbar-thumb);
   --sb-size: 14px;
 }
 
-body::-webkit-scrollbar {
+main::-webkit-scrollbar {
   width: var(--sb-size);
 }
 
-body::-webkit-scrollbar-track {
+main::-webkit-scrollbar-track {
   background: var(--sb-track-color);
   border-radius: 9px;
 }
 
-body::-webkit-scrollbar-thumb {
+main::-webkit-scrollbar-thumb {
   background: var(--sb-thumb-color);
   border-radius: 9px;
   border: 4px solid var(--sb-track-color);
 }
 
 @supports not selector(::-webkit-scrollbar) {
-  body {
+  main {
     scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
   }
 }

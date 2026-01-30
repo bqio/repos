@@ -1,35 +1,36 @@
-"use client";
+'use client';
 
-import { useState, useEffect, useMemo } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Settings, Search, ArrowUp, Star, ArrowUpDown } from "lucide-react";
-import Link from "next/link";
-import { PosterGrid } from "@/components/poster-grid";
-import type { Repository, RepositoryItem } from "@/types/repository";
+import { useState, useEffect, useMemo } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { SearchInput } from '@/components/search-input';
+import { Settings, Search, ArrowUp, Star, ArrowUpDown } from 'lucide-react';
+import Link from 'next/link';
+import { PosterGrid } from '@/components/poster-grid';
+import type { Repository, RepositoryItem } from '@/types/repository';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { LanguageToggle } from "@/components/language-toggle";
-import { translations, getItemsLabel, type Language } from "@/lib/i18n";
-import { getFavorites } from "@/lib/favorites";
+} from '@/components/ui/select';
+import { ThemeToggle } from '@/components/theme-toggle';
+import { LanguageToggle } from '@/components/language-toggle';
+import { translations, getItemsLabel, type Language } from '@/lib/i18n';
+import { getFavorites } from '@/lib/favorites';
 
 export default function FavoritesPage() {
   const [favoriteItems, setFavoriteItems] = useState<RepositoryItem[]>([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState<"date" | "title" | "size">("date");
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortBy, setSortBy] = useState<'date' | 'title' | 'size'>('date');
   const [reverseSort, setReverseSort] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false);
-  const [language, setLanguage] = useState<Language>("en");
+  const [language, setLanguage] = useState<Language>('en');
 
   useEffect(() => {
     const loadFavorites = () => {
-      const repos = JSON.parse(localStorage.getItem("repositories") || "[]");
+      const repos = JSON.parse(localStorage.getItem('repositories') || '[]');
       const favoriteHashes = getFavorites();
 
       const allItems: RepositoryItem[] = [];
@@ -43,15 +44,15 @@ export default function FavoritesPage() {
         new Map(
           allItems
             .filter((item) => favoriteHashes.includes(item.hash))
-            .map((item) => [item.hash, item])
-        ).values()
+            .map((item) => [item.hash, item]),
+        ).values(),
       );
       setFavoriteItems(favItems);
     };
 
     loadFavorites();
 
-    const savedLanguage = localStorage.getItem("language") as Language;
+    const savedLanguage = localStorage.getItem('language') as Language;
     if (savedLanguage) {
       setLanguage(savedLanguage);
     }
@@ -65,17 +66,17 @@ export default function FavoritesPage() {
     };
 
     window.addEventListener(
-      "languageChange",
-      handleLanguageChange as EventListener
+      'languageChange',
+      handleLanguageChange as EventListener,
     );
-    window.addEventListener("favoritesChange", handleFavoritesChange);
+    window.addEventListener('favoritesChange', handleFavoritesChange);
 
     return () => {
       window.removeEventListener(
-        "languageChange",
-        handleLanguageChange as EventListener
+        'languageChange',
+        handleLanguageChange as EventListener,
       );
-      window.removeEventListener("favoritesChange", handleFavoritesChange);
+      window.removeEventListener('favoritesChange', handleFavoritesChange);
     };
   }, []);
 
@@ -84,8 +85,8 @@ export default function FavoritesPage() {
       setShowScrollTop(window.scrollY > 500);
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const filteredAndSortedItems = useMemo(() => {
@@ -94,20 +95,20 @@ export default function FavoritesPage() {
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       result = result.filter((item) =>
-        item.title.toLowerCase().includes(query)
+        item.title.toLowerCase().includes(query),
       );
     }
 
     result.sort((a, b) => {
       let comparison = 0;
       switch (sortBy) {
-        case "date":
+        case 'date':
           comparison = (b.published_date || 0) - (a.published_date || 0);
           break;
-        case "title":
+        case 'title':
           comparison = a.title.localeCompare(b.title);
           break;
-        case "size":
+        case 'size':
           comparison = (b.size || 0) - (a.size || 0);
           break;
         default:
@@ -120,13 +121,13 @@ export default function FavoritesPage() {
   }, [favoriteItems, searchQuery, sortBy, reverseSort]);
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const t = translations[language];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="h-screen flex flex-col bg-background overflow-hidden">
       <header className="border-b border-border bg-card sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex-1 min-w-0">
@@ -135,7 +136,7 @@ export default function FavoritesPage() {
             </h1>
             <div className="flex items-center gap-3 text-sm text-muted-foreground mt-1">
               <span>
-                {favoriteItems.length}{" "}
+                {favoriteItems.length}{' '}
                 {getItemsLabel(favoriteItems.length, language)}
               </span>
             </div>
@@ -162,15 +163,14 @@ export default function FavoritesPage() {
             <div className="container mx-auto px-4 py-4">
               <div className="flex flex-col sm:flex-row gap-4">
                 <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
+                  <SearchInput
                     placeholder={t.searchPlaceholder}
                     value={searchQuery}
-                    onChange={(e) => {
-                      setSearchQuery(e.target.value);
+                    onChange={(value) => {
+                      setSearchQuery(value);
                       scrollToTop();
                     }}
-                    className="pl-9"
+                    onClear={() => scrollToTop()}
                   />
                 </div>
                 <Select
@@ -180,7 +180,7 @@ export default function FavoritesPage() {
                     scrollToTop();
                   }}
                 >
-                  <SelectTrigger className="w-full sm:w-[200px]">
+                  <SelectTrigger className="w-full sm:w-50">
                     <SelectValue placeholder={t.sorting} />
                   </SelectTrigger>
                   <SelectContent>
@@ -205,37 +205,41 @@ export default function FavoritesPage() {
             </div>
           </>
         ) : (
-          ""
+          ''
         )}
       </header>
 
-      <main className="container mx-auto px-4 py-8">
-        {favoriteItems.length > 0 ? (
-          <>
-            {searchQuery && (
-              <p className="text-sm text-muted-foreground mb-4">
-                {t.found}: {filteredAndSortedItems.length}
-              </p>
-            )}
+      <main className="flex-1 overflow-y-auto">
+        <div className="container mx-auto p-7">
+          {favoriteItems.length > 0 ? (
+            <>
+              {searchQuery && (
+                <p className="text-sm text-muted-foreground mb-4">
+                  {t.found}: {filteredAndSortedItems.length}
+                </p>
+              )}
 
-            <PosterGrid items={filteredAndSortedItems} />
-          </>
-        ) : (
-          <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="rounded-full bg-muted p-6 mb-4">
-              <Star className="h-10 w-10 text-muted-foreground" />
+              <PosterGrid items={filteredAndSortedItems} />
+            </>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+              <div className="rounded-full bg-muted p-6 mb-4">
+                <Star className="h-10 w-10 text-muted-foreground" />
+              </div>
+              <h2 className="text-2xl font-semibold mb-2">{t.noFavorites}</h2>
+              <p className="text-muted-foreground mb-6 max-w-md">
+                {language === 'ru'
+                  ? 'Добавляйте элементы в избранное, нажимая на звездочку на постере'
+                  : 'Add items to favorites by clicking the star on the poster'}
+              </p>
+              <Link href="/">
+                <Button>
+                  {language === 'ru' ? 'На главную' : 'Go to Home'}
+                </Button>
+              </Link>
             </div>
-            <h2 className="text-2xl font-semibold mb-2">{t.noFavorites}</h2>
-            <p className="text-muted-foreground mb-6 max-w-md">
-              {language === "ru"
-                ? "Добавляйте элементы в избранное, нажимая на звездочку на постере"
-                : "Add items to favorites by clicking the star on the poster"}
-            </p>
-            <Link href="/">
-              <Button>{language === "ru" ? "На главную" : "Go to Home"}</Button>
-            </Link>
-          </div>
-        )}
+          )}
+        </div>
       </main>
 
       {showScrollTop && (

@@ -233,7 +233,7 @@ export default function HomePage() {
   const t = translations[language];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="h-screen flex flex-col bg-background overflow-hidden">
       <UpdateDialog
         open={openUpdateDialog}
         onClickUpdate={handleUpdate}
@@ -345,31 +345,33 @@ export default function HomePage() {
         )}
       </header>
 
-      <main className="container mx-auto px-4 py-8">
-        {items.length > 0 ? (
-          <>
-            {searchQuery && (
-              <p className="text-sm text-muted-foreground mb-4">
-                {t.found}: {filteredAndSortedItems.length}
-              </p>
-            )}
+      <main className="flex-1 overflow-y-auto">
+        <div className="container mx-auto p-7">
+          {items.length > 0 ? (
+            <>
+              {searchQuery && (
+                <p className="text-sm text-muted-foreground mb-4">
+                  {t.found}: {filteredAndSortedItems.length}
+                </p>
+              )}
 
-            <PosterGrid items={filteredAndSortedItems} />
-          </>
-        ) : (
-          <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="rounded-full bg-muted p-6 mb-4">
-              <Settings className="h-10 w-10 text-muted-foreground" />
+              <PosterGrid items={filteredAndSortedItems} />
+            </>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+              <div className="rounded-full bg-muted p-6 mb-4">
+                <Settings className="h-10 w-10 text-muted-foreground" />
+              </div>
+              <h2 className="text-2xl font-semibold mb-2">{t.noActiveRepo}</h2>
+              <p className="text-muted-foreground mb-6 max-w-md">
+                {t.addRepoDesc}
+              </p>
+              <Link href="/manager">
+                <Button>{t.openManager}</Button>
+              </Link>
             </div>
-            <h2 className="text-2xl font-semibold mb-2">{t.noActiveRepo}</h2>
-            <p className="text-muted-foreground mb-6 max-w-md">
-              {t.addRepoDesc}
-            </p>
-            <Link href="/manager">
-              <Button>{t.openManager}</Button>
-            </Link>
-          </div>
-        )}
+          )}
+        </div>
       </main>
 
       {showScrollTop && (
