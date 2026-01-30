@@ -1,26 +1,29 @@
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
+
+import { translations, type Language } from '@/lib/i18n';
 
 export function UpdateDialog({
   open,
   version,
   setOpen,
   onClickUpdate,
+  l,
 }: {
   open: boolean;
   version: string | null;
   setOpen(open: boolean): void;
   onClickUpdate(): void;
+  l: Language;
 }) {
+  const t = translations[l];
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent
@@ -28,17 +31,19 @@ export function UpdateDialog({
         onPointerDownOutside={(e) => e.preventDefault()}
       >
         <DialogHeader>
-          <DialogTitle>Обновление</DialogTitle>
+          <DialogTitle>
+            {t.updateDialogTitle} {version}
+          </DialogTitle>
           <DialogDescription>
             <br />
-            Обнаружена новая версия <strong>Repos {version}</strong>.
+            {t.updateDialogDescr}
             <br />
             <br />
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="sm:justify-start">
           <Button type="button" onClick={() => onClickUpdate()}>
-            Обновить
+            {t.updateDialogButton}
           </Button>
         </DialogFooter>
       </DialogContent>
