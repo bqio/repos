@@ -35,6 +35,18 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
-    "publisher": "Repos Corp."
+    "publisher": "Repos Corp.",
+    "createUpdaterArtifacts": true
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IENDMjEyRTcyOTVDRUIwNTAKUldSUXNNNlZjaTRoek9lcjRrOU5DT0tsTUx4cUQ4WWZ6YUgrN2FEK3JLOWVKdm9sNk1veVZPSEEK",
+      "endpoints": [
+        "https://github.com/bqio/repos/releases/latest/download/latest.json"
+      ],
+      "windows": {
+        "installMode": "passive"
+      }
+    }
   }
 }

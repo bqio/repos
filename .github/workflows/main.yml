@@ -26,12 +26,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: setup node
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
-      
-      - name: setup pnpm
+
+      - name: Setup pnpm
         run: npm i -g pnpm
 
       - name: install Rust stable
@@ -39,13 +39,13 @@ jobs:
         with:
           targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
-      - name: install dependencies (ubuntu only)
+      - name: Install dependencies (ubuntu only)
         if: matrix.platform == 'ubuntu-22.04'
         run: |
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
 
-      - name: install frontend dependencies
+      - name: Install frontend dependencies
         run: pnpm install
 
       - uses: tauri-apps/tauri-action@v0.6.1
@@ -55,6 +55,7 @@ jobs:
           tagName: repos-v__VERSION__
           releaseName: 'Repos v__VERSION__'
           releaseBody: 'See the assets to download this version and install.'
+          uploadUpdaterJson: true
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.args }}
