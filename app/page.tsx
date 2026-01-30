@@ -173,7 +173,7 @@ export default function HomePage() {
       }
     });
 
-    console.log('update installed');
+    console.log('update installed2');
     await relaunch();
   };
 
